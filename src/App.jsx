@@ -2,6 +2,8 @@ import React from 'react';
 import Header from './Components/Header';
 import Hero from './Components/Hero';
 import Uploader from './Components/Uploader';
+import Footer from './Components/Footer';
+import { Grid } from '@mui/material';
 
 
 function App() {
@@ -10,9 +12,7 @@ function App() {
       <Header />
       <Hero />
       <Uploader />
-
-      {/* Two columns on left is a button and on right is a form For drag and drop */}
-
+      <Footer />
 
     </>
   );

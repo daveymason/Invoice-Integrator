@@ -8,7 +8,6 @@ export default function Header() {
     return (
         <AppBar position="fixed" sx={{mb:5, bgcolor: '#1E3050' }}>
         <Toolbar>
-          {/* logo 1 */}
           <img src={logo1} alt="logo1" style={{ width: '50px', height: '50px', marginRight: '16px' }} />
 
             <Typography variant="h6" sx={{ flexGrow: 1 }}>

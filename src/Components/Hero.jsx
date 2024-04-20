@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography, Grid, Box } from '@mui/material';
-import heroImage from '../assets/heroImage.png'; // Ensure this path is correct
+import heroImage from '../assets/heroImage.png'; 
 
 function Hero() {
   return (
