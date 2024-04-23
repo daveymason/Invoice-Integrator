@@ -18,7 +18,7 @@ steps:
 
   # Deploy the app to Google App Engine
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['app', 'deploy', 'backend/app.yaml']
+    args: ['app', 'deploy', 'app.yaml']
 
 options:
   logging: 'CLOUD_LOGGING_ONLY'
