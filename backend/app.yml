@@ -1,0 +1,12 @@
+runtime: python39
+entrypoint: gunicorn -b :$PORT app:app
+
+handlers:
+- url: /static
+  static_dir: dist/static
+- url: /(.*\.(json|ico|js|txt))
+  static_files: dist/\1
+  upload: dist/(.*\.(json|ico|js|txt))
+- url: /.*
+  static_files: dist/index.html
+  upload: dist/index.html
