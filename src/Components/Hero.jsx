@@ -11,7 +11,7 @@ function Hero() {
         </Grid>
         <Grid item xs={10} md={5}>
           <Typography variant="h3" gutterBottom>
-            AI-Powered Invoice Solutions
+            AI-Powered Invoice Management
           </Typography>
           <Typography variant="h6" gutterBottom>
           Say goodbye to manual sorting and hello to automated, error-free processing with our 
