@@ -8,11 +8,32 @@ import { useDropzone } from 'react-dropzone';
 
 function Uploader() {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    // onDrop method is called when files are dropped
-    onDrop: (acceptedFiles) => {
-      console.log(acceptedFiles);
-      // You can handle file upload here
-      alert('File uploaded successfully!');
+    // Accept only PDF files
+    accept: 'application/pdf',
+    onDrop: async (acceptedFiles) => {
+      // Use FormData to send files as multipart/form-data
+      const formData = new FormData();
+      acceptedFiles.forEach(file => {
+        formData.append('file', file);
+      });
+
+      try {
+        // Update the URL to the endpoint of your Flask backend
+        const response = await fetch('/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          alert('File uploaded successfully!');
+          // Handle response here
+        } else {
+          alert('File upload failed!');
+          // Handle error here
+        }
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
     },
   });
   
