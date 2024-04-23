@@ -17,5 +17,5 @@ steps:
     args: ['install', '-r', 'backend/requirements.txt']
 
   # Deploy the app to Google App Engine
-  - name: 'gcr.io/cloud-builders/gcloud'
+  - name: 'gcr.io/cloudbuilders/gcloud'
     args: ['app', 'deploy', 'backend/app.yaml']
