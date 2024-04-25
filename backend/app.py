@@ -1,21 +1,11 @@
 from flask import Flask, send_from_directory, request, jsonify
 import os
+import base64
 from werkzeug.utils import secure_filename
-from gemini import generate  # Make sure this import matches the name of your actual function
+from gemini import generate
 
 
 app = Flask(__name__, static_folder='../dist')  # Pointing to the dist directory
-
-@app.route('/generate-suggestions', methods=['GET'])
-def generate_suggestions_route():
-    try:
-        suggestions = generate()
-        response = jsonify({'suggestions': suggestions})
-        response.headers['Cache-Control'] = 'no-store'
-        return response, 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
@@ -37,20 +27,21 @@ def upload_file():
 
     if file:
         filename = secure_filename(file.filename)
-        filepath = os.path.join('backend/uploads', filename)
+        filepath = os.path.join('uploads', filename)
         file.save(filepath)
         
-        try:
-            # Here you call your model processing function, ensure it takes the file path
-            # as the argument, or adjust it to send the file content if necessary.
-            response = generate(filepath)  # Adjust if your function expects different input
-            return jsonify({'message': 'File processed successfully.', 'data': response}), 200
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
- 
+        with open(filepath, "rb") as pdf_file:
+            pdf_content = pdf_file.read()
+        pdf_content_base64 = base64.b64encode(pdf_content).decode('utf-8')
 
-
-    
+    try:
+        app.logger.info('Processing file: %s', filename)
+        extracted_data = generate(pdf_content_base64)
+        app.logger.info('File processed successfully')
+        return jsonify({'message': 'File processed successfully.', 'data': extracted_data}), 200
+    except Exception as e:
+        app.logger.error('Error processing file', exc_info=e)
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

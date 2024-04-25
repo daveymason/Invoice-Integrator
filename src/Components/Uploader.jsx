@@ -1,44 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Typography, Grid, Box, Button } from '@mui/material';
-
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-
 import { useDropzone } from 'react-dropzone';
 
 function Uploader() {
+  const [uploadResult, setUploadResult] = useState(''); // State to store the upload result
+  const [extractedData, setExtractedData] = useState(''); // State to store extracted data from the upload
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    // Accept only PDF files
     accept: 'application/pdf',
     onDrop: async (acceptedFiles) => {
-      // Use FormData to send files as multipart/form-data
       const formData = new FormData();
       acceptedFiles.forEach(file => {
         formData.append('file', file);
       });
 
       try {
-        // Update the URL to the endpoint of your Flask backend
         const response = await fetch('/upload', {
           method: 'POST',
           body: formData,
         });
 
+        const result = await response.json();
         if (response.ok) {
-          alert('File uploaded successfully!');
-          // Handle response here
+          setUploadResult('File uploaded successfully!');
+          setExtractedData(result.data); // Update extracted data state
         } else {
           alert('File upload failed!');
-          // Handle error here
+          setUploadResult('File upload failed');
         }
       } catch (error) {
         console.error('Error uploading file:', error);
+        setUploadResult('Error uploading file');
       }
     },
   });
 
   return (
     <Grid container spacing={2} sx={{ bgcolor: '#f5f5f5', p: 5 }}>
+      {extractedData && (
+        <Grid item xs={12}>
+          <Typography variant="body1" sx={{ whiteSpace: 'pre-line' }}>
+            {extractedData}
+          </Typography>
+        </Grid>
+      )}
+      <Grid item xs={12}>
+        <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+          {uploadResult}
+        </Typography>
+      </Grid>
       <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Button variant="contained" component="label" sx={{ bgcolor: '#1E3050', color: 'white', p: 2, m: 2 }} {...getRootProps()}>
           <CloudUploadIcon sx={{ mr: 1 }} />Upload Invoices
@@ -54,12 +66,10 @@ function Uploader() {
             </Typography>
           ) : (
             <Typography variant="h6" gutterBottom>
-              <DragIndicatorIcon sx={{ mr: 1 }} />Drop some invoices here
+              <DragIndicatorIcon sx={{ mr: 1 }} />Drag and drop some invoices here, or click to select files
             </Typography>
           )}
-
         </Box>
-
       </Grid>
     </Grid>
   );
