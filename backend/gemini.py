@@ -98,7 +98,6 @@ def generate(pdf_base64):
         stream=True,
     )
 
-
   extracted_data = ""
   for response in responses:
         extracted_data += response.text

@@ -1,6 +1,7 @@
 from flask import Flask, send_from_directory, request, jsonify
 import os
 import base64
+import logging
 from werkzeug.utils import secure_filename
 from gemini import generate
 
@@ -44,4 +45,5 @@ def upload_file():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     app.run(debug=True)
