@@ -13,29 +13,29 @@ function Uploader() {
     setIsLoading(true);
     const formData = new FormData();
     files.forEach(file => formData.append('file', file));
-
+  
     try {
       const response = await fetch('/upload', {
         method: 'POST',
         body: formData,
       });
-
-      if (!response.ok) {
-        alert('File upload failed!');
-        setUploadResult('File upload failed');
-        setIsLoading(false);
-        return;
+  
+      const text = await response.text();
+      try {
+        const data = JSON.parse(text);
+        setUploadResult('File uploaded successfully!');
+        setExtractedData(data);
+      } catch (e) {
+        console.error('Error parsing JSON:', e);
+        setUploadResult('File upload failed - server did not return valid JSON.');
       }
-
-      const result = await response.json();
-      setUploadResult('File uploaded successfully!');
-      setExtractedData(result.data);
     } catch (error) {
       console.error('Error uploading file:', error);
       setUploadResult('Error uploading file');
     }
     setIsLoading(false);
   };
+  
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: 'application/pdf',
@@ -43,6 +43,10 @@ function Uploader() {
   });
 
   function renderDataTable(data) {
+    if (typeof data !== 'object' || data == null) {
+      return <Typography> No data to display. </Typography>;
+    }
+  
     const entries = Object.entries(data);
     return (
       <TableContainer component={Paper}>
@@ -62,7 +66,9 @@ function Uploader() {
                 <TableCell component="th" scope="row">
                   {key}
                 </TableCell>
-                <TableCell align="right">{value}</TableCell>
+                <TableCell align="right">
+                  {typeof value === 'string' || typeof value === 'number' ? value : JSON.stringify(value)}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -71,8 +77,9 @@ function Uploader() {
     );
   }
   
+  
   return (
-    <Grid container spacing={2} sx={{ bgcolor: '#f5f5f5', p: 5 }} {...getRootProps()}>
+    <Grid container spacing={2} sx={{ bgcolor: '#f5f5f5', p: 5 }} >
       <Grid item xs={6}>
         <Button variant="contained" component="label" sx={{ bgcolor: '#1E3050', color: 'white', p: 2, m: 2 }}>
           <CloudUploadIcon sx={{ mr: 1 }} />Upload Invoices
@@ -98,6 +105,10 @@ function Uploader() {
         <hr />
       </Grid>
 
+      <Grid item xs={12} sx={{color: '#323232'}}>
+        {extractedData && <Typography variant="h5">Extracted Data</Typography>}
+      </Grid>
+
       <Grid item xs={12}>
         {isLoading ? <CircularProgress /> : (uploadResult && renderDataTable(extractedData))}
       </Grid>
@@ -106,11 +117,6 @@ function Uploader() {
           {uploadResult}
         </Typography>
       </Grid>
-      <Grid item xs={12} sx={{color: '#323232'}}
-        style={{ whiteSpace: 'pre-wrap' }}>
-        {JSON.stringify(extractedData, null, 2)}
-      </Grid>
-      
     </Grid>
   );
 }
