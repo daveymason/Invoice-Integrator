@@ -70,7 +70,7 @@ def generate(pdf_base64):
 	]
   }
 
-- The JSON schema must be followed during the extraction.
+- The JSON schema must be followed EXACTLY during the extraction.
 - The values must only include text found in the document
 - Do not normalize any entity value.
 - If an entity is not found in the document, set the entity value to null."""
