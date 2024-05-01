@@ -7,8 +7,7 @@ handlers:
 - url: /(.*\.(json|ico|js|txt))
   static_files: dist/\1
   upload: dist/(.*\.(json|ico|js|txt))
-- url: /.*
-  static_files: dist/index.html
-  upload: dist/index.html
+- url: /.*  # Catches all unmatched requests
+  script: backend.app:app
 - url: /upload
   script: backend.app:upload_file
