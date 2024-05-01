@@ -14,7 +14,9 @@ handlers:
   # Serve other static files (JSON, ICO, JS, TXT)
   - url: /(.*\.(json|ico|js|txt))
     static_files: dist/
+    upload: dist/(.*\.(json|ico|js|txt))
 
   # Catches all unmatched requests and serves the frontend (adjust path based on your build process)
   - url: /.*
     static_files: src/build/index.html
+    upload: src/build/index.html
