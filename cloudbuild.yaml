@@ -1,11 +1,8 @@
 steps:
-  # Install Python dependencies and prepare the Python environment
+  # Build the Python app
   - name: 'python:3.12'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        pip install -r backend/requirements.txt
+    entrypoint: 'pip'
+    args: ['install', '-r', 'backend/requirements.txt']
 
   # Build the React app
   - name: 'node:20'

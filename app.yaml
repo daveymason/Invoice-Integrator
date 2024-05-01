@@ -3,15 +3,15 @@ entrypoint: gunicorn -b :$PORT backend.app:app
 
 handlers:
 - url: /static
-  static_dir: build/static
+  static_dir: dist/static
 
 - url: /(.*\.(json|ico|js|txt))
-  static_files: build/\1
-  upload: build/.*\.(json|ico|js|txt)
+  static_files: dist/\1
+  upload: dist/.*\.(json|ico|js|txt)
 
 - url: /upload
   script: auto
 
 - url: /.*
-  static_files: build/index.html
-  upload: build/index.html
+  static_files: dist/index.html
+  upload: dist/index.html
