@@ -11,5 +11,5 @@ handlers:
   static_files: dist/index.html
   upload: dist/index.html  # Optional for frontend uploads
 - url: /upload/(.+\.pdf)$  # Handler for PDF uploads
-  script: backend.app:handle_pdf_upload  # Assuming a function in app.py
+  script: backend.app:upload_file # Assuming a function in app.py
   upload: /upload/\1  # Saves uploaded PDFs to /upload directory
