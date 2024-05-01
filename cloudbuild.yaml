@@ -5,6 +5,8 @@ steps:
     args:
       - '-c'
       - |
+        pwd  # Print Working Directory
+        ls -l  # List files in the current directory
         python3 -m venv venv  # Create virtual environment named 'venv'
         source venv/bin/activate  # Activate the virtual environment
 

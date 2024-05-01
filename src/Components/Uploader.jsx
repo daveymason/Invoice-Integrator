@@ -18,22 +18,40 @@ function Uploader() {
       const response = await fetch('/upload', {
         method: 'POST',
         body: formData,
+        onUploadProgress: (event) => {
+          const progress = Math.round((event.loaded / event.total) * 100);
+          console.log(`Upload progress: ${progress}%`);
+        },
       });
   
-      const text = await response.text();
-      try {
-        const data = JSON.parse(text);
+      if (!response.ok) {
+        throw new Error(`Upload failed with status: ${response.status}`);
+      }
+  
+      const contentType = response.headers.get('Content-Type');
+  
+      if (contentType.includes('application/json')) {
+        const text = await response.text();
+        try {
+          const data = JSON.parse(text);
+          setUploadResult('File uploaded successfully!');
+          setExtractedData(data);
+        } catch (e) {
+          console.error('Error parsing JSON:', e);
+          setUploadResult('File upload failed - server did not return valid JSON.');
+        }
+      } else {
+        // Handle other response formats here
+        const text = await response.text();
         setUploadResult('File uploaded successfully!');
-        setExtractedData(data);
-      } catch (e) {
-        console.error('Error parsing JSON:', e);
-        setUploadResult('File upload failed - server did not return valid JSON.');
+        console.log('Server response (not JSON):', text);
       }
     } catch (error) {
       console.error('Error uploading file:', error);
       setUploadResult('Error uploading file');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
   
 
