@@ -7,6 +7,10 @@ handlers:
   - url: /static
     static_dir: src/build/static
 
+  # Handler for PDF uploads
+  - url: /upload/(.+\.pdf)$
+    script: backend.app:upload_file  # Assuming a function in app.py
+
   # Serve other static files (JSON, ICO, JS, TXT)
   - url: /(.*\.(json|ico|js|txt))
     static_files: dist/
@@ -14,7 +18,3 @@ handlers:
   # Catches all unmatched requests and serves the frontend (adjust path based on your build process)
   - url: /.*
     static_files: src/build/index.html
-
-  # Handler for PDF uploads
-  - url: /upload/(.+\.pdf)$
-    script: backend.app:upload_file  # Assuming a function in app.py
