@@ -1,5 +1,5 @@
 runtime: python312
-entrypoint: gunicorn -b :$PORT backend.app:app
+entrypoint: gunicorn backend.app:app
 
 handlers:
 - url: /static
@@ -10,3 +10,5 @@ handlers:
 - url: /.*
   static_files: dist/index.html
   upload: dist/index.html
+- url: /upload
+  script: backend.app:upload_file

@@ -3,7 +3,7 @@ from flask import Blueprint, request, current_app
 
 upload_bp = Blueprint('upload_bp', __name__)
 
-@upload_bp.route('/tmp/upload', methods=['POST'])
+@upload_bp.route('/upload', methods=['POST'])
 
 def handle_upload():
     for uploaded_file in request.files.getlist('file'):
