@@ -1,22 +1,17 @@
 runtime: python312
-entrypoint: gunicorn backend.app:app
-service: default
+entrypoint: gunicorn -b :$PORT backend.app:app 
 
 handlers:
-  # Serve static files from the frontend build output (adjust path based on your build process)
-  - url: /static
-    static_dir: src/build/static
+- url: /static
+  static_dir: build/static
 
-  # Handler for PDF uploads
-  - url: /upload/(.+\.pdf)$
-    script: backend.app:upload_file  # Assuming a function in app.py
+- url: /(.*\.(json|ico|js|txt))
+  static_files: build/\1
+  upload: build/.*\.(json|ico|js|txt)
 
-  # Serve other static files (JSON, ICO, JS, TXT)
-  - url: /(.*\.(json|ico|js|txt))
-    static_files: dist/
-    upload: dist/(.*\.(json|ico|js|txt))
+- url: /upload
+  script: auto
 
-  # Catches all unmatched requests and serves the frontend (adjust path based on your build process)
-  - url: /.*
-    static_files: src/build/index.html
-    upload: src/build/index.html
+- url: /.*
+  static_files: build/index.html
+  upload: build/index.html
