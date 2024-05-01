@@ -7,7 +7,9 @@ handlers:
 - url: /(.*\.(json|ico|js|txt))
   static_files: dist/\1
   upload: dist/(.*\.(json|ico|js|txt))
-- url: /.*  # Catches all unmatched requests
-  script: backend.app:app
-- url: /upload
-  script: backend.app:upload_file
+- url: /.*  # Catches all unmatched requests (can be adjusted for frontend)
+  static_files: dist/index.html
+  upload: dist/index.html  # Optional for frontend uploads
+- url: /upload/(.+\.pdf)$  # Handler for PDF uploads
+  script: backend.app:handle_pdf_upload  # Assuming a function in app.py
+  upload: /upload/\1  # Saves uploaded PDFs to /upload directory
