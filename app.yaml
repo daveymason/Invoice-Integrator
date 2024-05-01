@@ -1,15 +1,17 @@
 runtime: python312
 entrypoint: gunicorn backend.app:app
+service: default
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['app', 'deploy', 'app.yaml']
+  dir: 'src'
 
 handlers:
 - url: /static
   static_dir: dist/static
 - url: /(.*\.(json|ico|js|txt))
   static_files: dist/
-  upload: dist/(.*\.(json|ico|js|txt))
 - url: /.*  # Catches all unmatched requests (can be adjusted for frontend)
   static_files: dist/index.html
-  upload: dist/index.html  # Optional for frontend uploads
 - url: /upload/(.+\.pdf)$  # Handler for PDF uploads
-  script: backend.app:upload_file # Assuming a function in app.py
-  upload: /upload/  # Saves uploaded PDFs to /upload directory
+  script: backend.app:upload_file # Assuming a function in app.py named 'upload_file'
