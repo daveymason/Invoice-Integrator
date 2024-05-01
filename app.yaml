@@ -4,7 +4,7 @@ service: default
 
 - name: 'gcr.io/cloud-builders/gcloud'
   args: ['app', 'deploy', 'app.yaml']
-  dir: 'src'
+  dir: '.'  # Now points to the root directory
 
 handlers:
 - url: /static
