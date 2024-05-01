@@ -2,16 +2,24 @@ runtime: python312
 entrypoint: gunicorn backend.app:app
 service: default
 
+# Cloud Build Step (for deployment)
 - name: 'gcr.io/cloud-builders/gcloud'
   args: ['app', 'deploy', 'app.yaml']
-  dir: '.'  # Now points to the root directory
+  dir: '.'  # Points to the root directory
 
 handlers:
-- url: /static
-  static_dir: dist/static
-- url: /(.*\.(json|ico|js|txt))
-  static_files: dist/
-- url: /.*  # Catches all unmatched requests (can be adjusted for frontend)
-  static_files: dist/index.html
-- url: /upload/(.+\.pdf)$  # Handler for PDF uploads
-  script: backend.app:upload_file # Assuming a function in app.py named 'upload_file'
+  # Serve static files from the frontend build output (adjust path based on your build process)
+  - url: /static
+    static_dir: src/build/static
+
+  # Serve other static files (JSON, ICO, JS, TXT)
+  - url: /(.*\.(json|ico|js|txt))
+    static_files: dist/
+
+  # Catches all unmatched requests and serves the frontend (adjust path based on your build process)
+  - url: /.*
+    static_files: src/build/index.html
+
+  # Handler for PDF uploads using Cloud Storage
+  - url: /upload/(.+\.pdf)$
+    script: backend.app:handle_pdf_upload  # Assuming a function in app.py
