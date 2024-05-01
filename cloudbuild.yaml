@@ -1,12 +1,12 @@
 steps:
-  # 1. Create virtual environment (Python 3.12)
+  # 1. Create virtual environment (Python 3.12) on Google Cloud Build App Engine
   - name: 'python:3.12'
-    entrypoint: '/bin/bash' # Use bash to execute multiple commands
+    entrypoint: '/bin/bash' # Use bash to execute multiple commands on Google Cloud Build
     args:
-      - '-c'  # Pass commands to bash
-        - |
-          python3 -m venv venv  # Create virtual environment named 'venv'
-          source venv/bin/activate  # Activate the virtual environment
+      - '-c'
+      - |
+        python3 -m venv venv  # Create virtual environment named 'venv'
+        source venv/bin/activate  # Activate the virtual environment
 
   # 2. Install Python dependencies within the virtual environment
   - name: 'python:3.12'
