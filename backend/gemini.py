@@ -1,7 +1,7 @@
 import base64
 from binascii import a2b_base64
 import vertexai
-from vertexai.generative_models import GenerativeModel, Part, FinishReason
+from vertexai.generative_models import GenerativeModel, Part
 import vertexai.preview.generative_models as generative_models
 
 def generate(pdf_base64):
@@ -11,75 +11,22 @@ def generate(pdf_base64):
         data=pdf_data  # Binary PDF data
     )
   
-  text1 = """You are a document entity extraction specialist. Given a document, your task is to extract the text value of the following entities:
-  {
-	\"amount_paid_since_last_invoice\": \"\",
-	\"carrier\": \"\",
-	\"currency\": \"\",
-	\"currency_exchange_rate\": \"\",
-	\"delivery_date\": \"\",
-	\"due_date\": \"\",
-	\"freight_amount\": \"\",
-	\"invoice_date\": \"\",
-	\"invoice_id\": \"\",
-	\"line_items\": [
-		{
-			\"amount\": \"\",
-			\"description\": \"\",
-			\"product_code\": \"\",
-			\"purchase_order\": \"\",
-			\"quantity\": \"\",
-			\"unit\": \"\",
-			\"unit_price\": \"\"
-		}
-	],
-	\"net_amount\": \"\",
-	\"payment_terms\": \"\",
-	\"purchase_order\": \"\",
-	\"receiver_address\": \"\",
-	\"receiver_email\": \"\",
-	\"receiver_name\": \"\",
-	\"receiver_phone\": \"\",
-	\"receiver_tax_id\": \"\",
-	\"receiver_website\": \"\",
-	\"remit_to_address\": \"\",
-	\"remit_to_name\": \"\",
-	\"ship_from_address\": \"\",
-	\"ship_from_name\": \"\",
-	\"ship_to_address\": \"\",
-	\"ship_to_name\": \"\",
-	\"supplier_address\": \"\",
-	\"supplier_email\": \"\",
-	\"supplier_iban\": \"\",
-	\"supplier_name\": \"\",
-	\"supplier_payment_ref\": \"\",
-	\"supplier_phone\": \"\",
-	\"supplier_registration\": \"\",
-	\"supplier_tax_id\": \"\",
-	\"supplier_website\": \"\",
-	\"total_amount\": \"\",
-	\"total_tax_amount\": \"\",
-	\"vat\": [
-		{
-			\"amount\": \"\",
-			\"category_code\": \"\",
-			\"tax_amount\": \"\",
-			\"tax_rate\": \"\",
-			\"total_amount\": \"\"
-		}
-	]
-  }
+  text1 = """You are a document entity extraction specialist. Given a document, your task is to extract the text value and of and then translate the extracted text into Engglish. 
+ Develop a machine learning model that takes as input a PDF invoice and extracts all textual content without assuming a fixed structure. 
+ The extracted text should then be structured into a JSON format where each discernible piece of data is assigned a probable field name based on its content (e.g., 'date', 'total', 'invoice number'). 
+ The JSON should include all text elements found in the PDF to ensure no data is missed. 
+ If certain data cannot be confidently assigned to a field, set to null but include the data that can be extracted.  
+ The output should be easily readable JSON that presents all extracted data in a structured form. The model should be able to handle a variety of invoice formats and layouts, including those with multiple pages, tables, and images.
 
-- The JSON schema must be followed EXACTLY during the extraction.
 - The values must only include text found in the document
 - Do not normalize any entity value.
-- If an entity is not found in the document, set the entity value to null."""
+- The output should be in English."""
 
   vertexai.init(project="invoice-integrator", location="us-central1")
   model = GenerativeModel("gemini-1.5-pro-preview-0409")
   
   generation_config = {
-    "max_output_tokens": 800,
+    "max_output_tokens": 800,  #  $0.000004 per 50 invoices. $1 per 250,000 invoices.
     "temperature": 1,
     "top_p": 0.95,
   }
@@ -103,4 +50,3 @@ def generate(pdf_base64):
         extracted_data += response.text
 
   return extracted_data
-

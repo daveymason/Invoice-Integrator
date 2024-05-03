@@ -43,7 +43,7 @@ def upload_file():
             with open(filepath, "rb") as pdf_file:
                 pdf_content = pdf_file.read()
             pdf_content_base64 = base64.b64encode(pdf_content).decode('utf-8')
-            extracted_data = generate(pdf_content_base64)
+            extracted_data = generate(pdf_content_base64) # Gemini is here
             app.logger.info('File processed successfully')
             return jsonify({'message': 'File processed successfully.', 'data': extracted_data}), 200
         except Exception as e:
@@ -52,4 +52,4 @@ def upload_file():
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    app.run(debug=False)  # Ensure this is set to False in your production deployment
+    app.run(debug=False)  
