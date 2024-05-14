@@ -3,6 +3,8 @@ import Header from './Components/Header';
 import Hero from './Components/Hero';
 import Uploader from './Components/Uploader';
 import Footer from './Components/Footer';
+import NFTConnector from './Components/NFTConnector';
+
 
 function App() {
   return (
@@ -10,6 +12,7 @@ function App() {
       <Header />
       <Hero />
       <Uploader />
+      <NFTConnector />
       <Footer />
     </>
   );
