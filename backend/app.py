@@ -4,6 +4,7 @@ import base64
 import logging
 from werkzeug.utils import secure_filename
 from gemini import generate
+from nft_connect import mint_nft
 
 app = Flask(__name__, static_folder='../dist')
 
@@ -49,6 +50,18 @@ def upload_file():
         except Exception as e:
             app.logger.error('Error processing file', exc_info=True)
             return jsonify({'error': str(e)}), 500
+
+@app.route('/mint_nft', methods=['POST'])
+def mint_nft_endpoint():
+    data = request.get_json()
+    recipient = data['recipient']
+    token_uri = data['token_uri']
+    try:
+        tx_hash = mint_nft(recipient, token_uri)
+        return jsonify({'tx_hash': tx_hash}), 200
+    except Exception as e:
+        app.logger.error('Error minting NFT', exc_info=True)
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
